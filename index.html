@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NormativaCheck — Guía de Proyecto</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --accent: #00ff9d;
+    --accent2: #ff3e6c;
+    --accent3: #7b61ff;
+    --text: #e0e0f0;
+    --muted: #6b6b8a;
+    --warn: #ffb800;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 6vw;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(0,255,157,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(123,97,255,0.08) 0%, transparent 60%);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,255,157,0.08);
+    border: 1px solid rgba(0,255,157,0.2);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 1rem;
+    border-radius: 2px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    width: fit-content;
+  }
+
+  .hero-badge::before {
+    content: '▶';
+    font-size: 0.6rem;
+    animation: blink 1.2s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  h1 {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 .line1 { display: block; color: var(--text); }
+  h1 .line2 { display: block; color: var(--accent); }
+  h1 .line3 { display: block; color: var(--muted); font-size: 0.5em; font-weight: 400; letter-spacing: 0.05em; margin-top: 0.5rem; }
+
+  .hero-meta {
+    display: flex;
+    gap: 3rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-item { display: flex; flex-direction: column; }
+  .meta-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+  .meta-value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(30,30,46,0.4) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(30,30,46,0.4) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 5rem 6vw;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  .arch-box {
+    background: var(--surface);
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .arch-box:hover { background: #16162a; }
+
+  .arch-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .arch-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .arch-tech {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent3);
+    margin-top: 1rem;
+    line-height: 1.8;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+
+  @media (max-width: 768px) {
+    .timeline { grid-template-columns: 1fr 1fr; }
+  }
+
+  .week-card {
+    background: var(--surface);
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .week-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .week-card:nth-child(1)::before { background: var(--accent); }
+  .week-card:nth-child(2)::before { background: var(--accent3); }
+  .week-card:nth-child(3)::before { background: var(--accent2); }
+  .week-card:nth-child(4)::before { background: var(--warn); }
+
+  .week-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .week-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .task-list { list-style: none; }
+
+  .task-list li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(30,30,46,0.8);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .task-list li::before {
+    content: '—';
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  /* TEAM ROLES */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+  }
+
+  .role-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgba(0,255,157,0.08);
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    line-height: 1;
+  }
+
+  .role-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .role-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .role-tasks { list-style: none; }
+  .role-tasks li {
+    font-size: 0.82rem;
+    color: var(--muted);
+    padding: 0.3rem 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .role-tasks li::before {
+    content: '▸';
+    color: var(--accent3);
+    flex-shrink: 0;
+  }
+
+  /* VULNS TABLE */
+  .vuln-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .vuln-card {
+    background: var(--surface);
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .vuln-severity {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+  }
+
+  .sev-high { background: rgba(255,62,108,0.15); color: var(--accent2); border: 1px solid rgba(255,62,108,0.3); }
+  .sev-med { background: rgba(255,184,0,0.1); color: var(--warn); border: 1px solid rgba(255,184,0,0.3); }
+  .sev-low { background: rgba(0,255,157,0.08); color: var(--accent); border: 1px solid rgba(0,255,157,0.2); }
+
+  .vuln-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .vuln-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #0d0d15;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 2;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    color: #a0a0c0;
+  }
+
+  .code-block .comment { color: #3d3d5c; }
+  .code-block .cmd { color: var(--accent); }
+  .code-block .str { color: var(--warn); }
+  .code-block .kw { color: var(--accent3); }
+
+  /* REPO STRUCTURE */
+  .repo-tree {
+    background: #0d0d15;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 2;
+    color: #a0a0c0;
+  }
+
+  .tree-dir { color: var(--accent3); }
+  .tree-file { color: var(--muted); }
+  .tree-important { color: var(--accent); }
+  .tree-vuln { color: var(--accent2); }
+
+  /* TOOLS SECTION */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .tool-card:hover { border-color: var(--accent3); }
+
+  .tool-emoji { font-size: 1.5rem; }
+  .tool-name { font-weight: 700; font-size: 0.95rem; }
+  .tool-use { font-size: 0.78rem; color: var(--muted); }
+
+  /* CLAUDE CODE GUIDE */
+  .steps-list {
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .step-item {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .step-num {
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .step-content h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-content p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .warning-box {
+    background: rgba(255,62,108,0.05);
+    border: 1px solid rgba(255,62,108,0.2);
+    border-left: 3px solid var(--accent2);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    font-size: 0.85rem;
+    color: #c0a0a8;
+  }
+
+  .warning-box strong { color: var(--accent2); }
+
+  .tip-box {
+    background: rgba(0,255,157,0.04);
+    border: 1px solid rgba(0,255,157,0.15);
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    font-size: 0.85rem;
+    color: #a0c0b0;
+  }
+
+  .tip-box strong { color: var(--accent); }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .nav-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">▶ NORMATIVACHECK</span>
+  <div class="nav-links">
+    <a href="#arquitectura">Arquitectura</a>
+    <a href="#equipo">Equipo</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#vulns">Vulnerabilidades</a>
+    <a href="#repo">Repositorio</a>
+    <a href="#claudecode">Claude Code</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="grid-overlay"></div>
+  <div class="hero-badge">Master Ciberseguridad — Proyecto Grupal</div>
+  <h1>
+    <span class="line1">Normativa</span>
+    <span class="line2">Check</span>
+    <span class="line3">Compliance Platform + Intentionally Vulnerable API</span>
+  </h1>
+  <p style="max-width:640px; color: var(--muted); font-size: 1rem; line-height: 1.7; margin-top: 1rem;">
+    Plataforma web que coteja normativas ISO/ENS/GDPR con la documentación interna de las empresas, expone una API REST dockerizada, y tiene vulnerabilidades intencionadas para ejercicios de pentesting.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Duración</span>
+      <span class="meta-value">4 semanas</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Equipo</span>
+      <span class="meta-value">5 personas</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Stack</span>
+      <span class="meta-value">Full-Stack + Docker</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Objetivo</span>
+      <span class="meta-value">v1.0 → ∞</span>
+    </div>
+  </div>
+</section>
+
+<!-- ARQUITECTURA -->
+<section id="arquitectura">
+  <div class="section-label">// 01 — Arquitectura del sistema</div>
+  <h2>¿Qué vamos a construir?</h2>
+
+  <div class="arch-grid">
+    <div class="arch-box">
+      <span class="arch-icon">🖥️</span>
+      <div class="arch-tag">Frontend</div>
+      <h3>Web App</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Interfaz donde las empresas suben sus políticas internas y ven el análisis de cumplimiento frente a normativas oficiales.</p>
+      <div class="arch-tech">React + Vite<br>TailwindCSS<br>Axios / Fetch</div>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">⚙️</span>
+      <div class="arch-tag">Backend / API</div>
+      <h3>REST API</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">API que recibe documentos, los coteja contra la base de normativas y devuelve un informe de gaps de cumplimiento.</p>
+      <div class="arch-tech">Python FastAPI<br>JWT Auth (vulnerable)<br>SQLite / PostgreSQL</div>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">🗄️</span>
+      <div class="arch-tag">Base de datos</div>
+      <h3>Normativas + Docs</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Almacena normativas vigentes (ISO 27001, ENS, GDPR, NIS2) y las políticas de cada empresa registrada.</p>
+      <div class="arch-tech">PostgreSQL<br>Vector embeddings (FAISS)<br>Alembic migrations</div>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">🐳</span>
+      <div class="arch-tag">Infraestructura</div>
+      <h3>Docker Compose</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Todo el stack corre en contenedores: frontend, API, base de datos, y panel de administración.</p>
+      <div class="arch-tech">Docker + Compose<br>Nginx reverse proxy<br>Adminer (DB panel)</div>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">🤖</span>
+      <div class="arch-tag">Motor de análisis</div>
+      <h3>NLP / LLM</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Módulo que compara texto de políticas de empresa contra requisitos de normativas usando embeddings o LLM API.</p>
+      <div class="arch-tech">OpenAI API / Ollama<br>LangChain<br>sentence-transformers</div>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">🔐</span>
+      <div class="arch-tag">Auth (vulnerable)</div>
+      <h3>Sistema de Usuarios</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Login, registro y roles. Contiene vulnerabilidades deliberadas para el ejercicio de pentesting.</p>
+      <div class="arch-tech">JWT débil<br>SQL sin sanitizar<br>CORS permisivo</div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>💡 Valor añadido:</strong> El motor NLP es el differentiator real. No sólo hace keyword matching — compara semánticamente si la política de la empresa cubre los requisitos de cada normativa. Esto os da un proyecto mucho más interesante para el portfolio.
+  </div>
+</section>
+
+<!-- EQUIPO -->
+<section id="equipo">
+  <div class="section-label">// 02 — División de roles</div>
+  <h2>5 personas, 5 roles claros</h2>
+
+  <div class="team-grid">
+    <div class="role-card">
+      <div class="role-number">01</div>
+      <div class="role-title">Team Lead + DevOps</div>
+      <div class="role-name">Infraestructura & CI/CD</div>
+      <ul class="role-tasks">
+        <li>Configurar repositorio GitHub + branch strategy</li>
+        <li>Escribir todos los Dockerfiles y docker-compose.yml</li>
+        <li>Configurar GitHub Actions (CI/CD)</li>
+        <li>Gestionar issues, PRs y milestones</li>
+        <li>Nginx reverse proxy + SSL</li>
+        <li>Documentación de despliegue (README)</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-number">02</div>
+      <div class="role-title">Backend Lead</div>
+      <div class="role-name">API REST + Auth</div>
+      <ul class="role-tasks">
+        <li>FastAPI: endpoints CRUD de empresas y normativas</li>
+        <li>Sistema de autenticación JWT</li>
+        <li>Modelos de base de datos (SQLAlchemy)</li>
+        <li>Implementar vulnerabilidades intencionadas</li>
+        <li>Documentación Swagger/OpenAPI</li>
+        <li>Tests unitarios de API</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-number">03</div>
+      <div class="role-title">NLP / AI Engineer</div>
+      <div class="role-name">Motor de análisis</div>
+      <ul class="role-tasks">
+        <li>Recopilar normativas (ISO27001, ENS, GDPR, NIS2)</li>
+        <li>Parser de documentos PDF/DOCX</li>
+        <li>Pipeline de comparación semántica</li>
+        <li>Integración con LLM API o Ollama local</li>
+        <li>Generación de informes de compliance</li>
+        <li>Módulo de scoring de cumplimiento</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-number">04</div>
+      <div class="role-title">Frontend Developer</div>
+      <div class="role-name">UI/UX Web App</div>
+      <ul class="role-tasks">
+        <li>Setup React + Vite + TailwindCSS</li>
+        <li>Dashboard de empresa: subir documentos</li>
+        <li>Visualización de resultados de análisis</li>
+        <li>Panel de normativas disponibles</li>
+        <li>Formularios de login/registro</li>
+        <li>Diseño responsive</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-number">05</div>
+      <div class="role-title">Security & QA</div>
+      <div class="role-name">Vuln Designer + Testing</div>
+      <ul class="role-tasks">
+        <li>Diseñar y documentar vulnerabilidades intencionadas</li>
+        <li>Crear guía de pentesting para compañeros</li>
+        <li>Tests de integración end-to-end</li>
+        <li>Crear datos de prueba (seed data)</li>
+        <li>Redactar writeups de las vulnerabilidades</li>
+        <li>Coordinar sesión de pentesting del máster</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:2rem;">
+    <strong>💡 Consejo:</strong> Cada persona es "propietaria" de su módulo pero todos hacen code review de los demás. Usad GitHub Projects para trackear tareas. El Team Lead hace merge a main siempre tras PR review.
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-label">// 03 — Roadmap de 4 semanas</div>
+  <h2>Un mes, cuatro sprints</h2>
+
+  <div class="timeline">
+    <div class="week-card">
+      <div class="week-num">Semana 01</div>
+      <div class="week-title">Fundamentos & Setup</div>
+      <ul class="task-list">
+        <li>Crear repo GitHub con estructura base</li>
+        <li>Definir ramas: main, develop, feature/*</li>
+        <li>Setup Docker Compose inicial (3 servicios)</li>
+        <li>FastAPI con endpoint /health</li>
+        <li>React app scaffolding con Vite</li>
+        <li>Base de datos: schema inicial</li>
+        <li>Recopilar textos de ISO27001 y GDPR</li>
+        <li>Primera reunión de arquitectura (1h)</li>
+      </ul>
+    </div>
+    <div class="week-card">
+      <div class="week-num">Semana 02</div>
+      <div class="week-title">Core Features</div>
+      <ul class="task-list">
+        <li>Auth: registro + login JWT</li>
+        <li>Endpoints: subir documentos empresa</li>
+        <li>Parser PDF/DOCX funcional</li>
+        <li>Motor NLP: comparación básica</li>
+        <li>Frontend: dashboard y formularios</li>
+        <li>Primer análisis end-to-end funcionando</li>
+        <li>Docker Compose con todos los servicios</li>
+        <li>Daily standups de 15 min</li>
+      </ul>
+    </div>
+    <div class="week-card">
+      <div class="week-num">Semana 03</div>
+      <div class="week-title">Vulnerabilidades & Polish</div>
+      <ul class="task-list">
+        <li>Implementar vulns intencionadas (lista abajo)</li>
+        <li>Scoring de cumplimiento con porcentaje</li>
+        <li>Generación de informe PDF exportable</li>
+        <li>Frontend: visualización de gaps</li>
+        <li>Panel admin (Adminer o custom)</li>
+        <li>ENS y NIS2 al motor de normativas</li>
+        <li>Documentar todas las vulnerabilidades</li>
+        <li>GitHub Actions: pipeline básico</li>
+      </ul>
+    </div>
+    <div class="week-card">
+      <div class="week-num">Semana 04</div>
+      <div class="week-title">Pentesting & Entrega</div>
+      <ul class="task-list">
+        <li>Bug fixing post-funcionalidades</li>
+        <li>Despliegue en servidor/VPS accesible</li>
+        <li>Preparar entorno para pentesters</li>
+        <li>Sesión de pentesting con compañeros</li>
+        <li>README completo con arquitectura</li>
+        <li>Documentación de la API (Swagger)</li>
+        <li>Presentación del proyecto</li>
+        <li>Retrospectiva y mejoras v2.0</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- VULNERABILIDADES -->
+<section id="vulns">
+  <div class="section-label">// 04 — Vulnerabilidades intencionadas</div>
+  <h2>Diseñadas para el pentesting</h2>
+
+  <div class="warning-box">
+    <strong>⚠️ IMPORTANTE:</strong> Estas vulnerabilidades son <strong>intencionadas y documentadas</strong>. El sistema debe desplegarse en un entorno <strong>aislado y controlado</strong>, nunca expuesto a internet real sin advertencias claras. Siempre con consentimiento explícito de todos los participantes.
+  </div>
+
+  <div class="vuln-grid">
+    <div class="vuln-card">
+      <span class="vuln-severity sev-high">CRÍTICA</span>
+      <div class="vuln-name">SQL Injection en login</div>
+      <div class="vuln-desc">El endpoint POST /api/auth/login construye la query SQL concatenando strings directamente. <code style="color:var(--warn);">' OR '1'='1</code> permite bypass de autenticación.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-high">CRÍTICA</span>
+      <div class="vuln-name">JWT Secret débil</div>
+      <div class="vuln-desc">El secret para firmar tokens JWT es "secret123". Con hashcat o jwt_tool se puede forjar tokens de admin en minutos.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-high">ALTA</span>
+      <div class="vuln-name">IDOR en documentos</div>
+      <div class="vuln-desc">El endpoint GET /api/docs/{id} no verifica que el documento pertenezca al usuario autenticado. Cambiar el ID permite leer docs de otras empresas.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-high">ALTA</span>
+      <div class="vuln-name">File Upload sin validación</div>
+      <div class="vuln-desc">El endpoint de subida de documentos acepta cualquier tipo de archivo, incluyendo .php o scripts. No hay validación de Content-Type ni magic bytes.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-med">MEDIA</span>
+      <div class="vuln-name">XSS en nombre de empresa</div>
+      <div class="vuln-desc">El campo "nombre de empresa" se renderiza sin sanitizar en el dashboard. Almacenar <code style="color:var(--warn);">&lt;script&gt;alert(1)&lt;/script&gt;</code> ejecuta JS en todos los usuarios que lo vean.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-med">MEDIA</span>
+      <div class="vuln-name">CORS wildcard</div>
+      <div class="vuln-desc">La API acepta peticiones de cualquier origen (<code style="color:var(--warn);">Access-Control-Allow-Origin: *</code>). Permite ataques CSRF desde dominios maliciosos.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-med">MEDIA</span>
+      <div class="vuln-name">Verbose Error Messages</div>
+      <div class="vuln-desc">Los errores devuelven stack traces completos con rutas del servidor, versiones de librerías y estructura de la base de datos. Information disclosure crítico.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-low">BAJA</span>
+      <div class="vuln-name">Rate Limiting ausente</div>
+      <div class="vuln-desc">No hay límite en intentos de login. Permite fuerza bruta de credenciales sin restricción temporal ni bloqueo de cuenta.</div>
+    </div>
+    <div class="vuln-card">
+      <span class="vuln-severity sev-low">BAJA</span>
+      <div class="vuln-name">Sensitive Data in Logs</div>
+      <div class="vuln-desc">Los logs de acceso incluyen passwords en texto plano y tokens JWT completos. Acceso a /logs o a los contenedores Docker revela credenciales.</div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:2rem;">
+    <strong>💡 Para la sesión de pentesting:</strong> Cread un documento "Scope & Rules of Engagement" que defina qué está en scope, qué no (ej: no DoS real), y cómo reportar hallazgos. Al finalizar, haced un CTF-style writeup colectivo. Esto es experiencia real de red team.
+  </div>
+</section>
+
+<!-- REPOSITORIO -->
+<section id="repo">
+  <div class="section-label">// 05 — Estructura del repositorio</div>
+  <h2>GitHub: organización del código</h2>
+
+  <div class="repo-tree">
+<span class="tree-dir">normativacheck/</span>
+├── <span class="tree-dir">.github/</span>
+│   ├── <span class="tree-dir">workflows/</span>
+│   │   ├── <span class="tree-important">ci.yml</span>          <span style="color:#3d3d5c;"># Tests automáticos en cada PR</span>
+│   │   └── <span class="tree-important">deploy.yml</span>       <span style="color:#3d3d5c;"># Deploy automático en main</span>
+│   ├── <span class="tree-dir">ISSUE_TEMPLATE/</span>
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   └── pull_request_template.md
+│
+├── <span class="tree-dir">frontend/</span>               <span style="color:#3d3d5c;"># React + Vite (Persona 4)</span>
+│   ├── <span class="tree-dir">src/</span>
+│   │   ├── <span class="tree-dir">components/</span>
+│   │   ├── <span class="tree-dir">pages/</span>
+│   │   └── <span class="tree-dir">api/</span>
+│   ├── Dockerfile
+│   └── package.json
+│
+├── <span class="tree-dir">backend/</span>                <span style="color:#3d3d5c;"># FastAPI (Persona 2)</span>
+│   ├── <span class="tree-dir">app/</span>
+│   │   ├── <span class="tree-dir">routers/</span>        <span style="color:#3d3d5c;"># auth.py, companies.py, docs.py</span>
+│   │   ├── <span class="tree-dir">models/</span>         <span style="color:#3d3d5c;"># SQLAlchemy models</span>
+│   │   ├── <span class="tree-dir">services/</span>
+│   │   └── <span class="tree-vuln">vulnerabilities/</span>  <span style="color:#3d3d5c;"># ⚠️ Código vulneable intencionado</span>
+│   ├── <span class="tree-dir">tests/</span>
+│   ├── Dockerfile
+│   └── requirements.txt
+│
+├── <span class="tree-dir">nlp-engine/</span>             <span style="color:#3d3d5c;"># Motor análisis (Persona 3)</span>
+│   ├── <span class="tree-dir">normativas/</span>         <span style="color:#3d3d5c;"># Textos ISO27001, GDPR, ENS, NIS2</span>
+│   ├── <span class="tree-dir">parsers/</span>
+│   ├── <span class="tree-dir">comparison/</span>
+│   └── requirements.txt
+│
+├── <span class="tree-dir">infra/</span>                  <span style="color:#3d3d5c;"># DevOps (Persona 1)</span>
+│   ├── nginx/
+│   │   └── nginx.conf
+│   └── <span class="tree-dir">scripts/</span>
+│
+├── <span class="tree-dir">security/</span>               <span style="color:#3d3d5c;"># Persona 5</span>
+│   ├── <span class="tree-important">VULNERABILITIES.md</span>  <span style="color:#3d3d5c;"># Documentación de vulns</span>
+│   ├── pentest-guide.md
+│   └── writeups/
+│
+├── <span class="tree-important">docker-compose.yml</span>
+├── <span class="tree-important">docker-compose.vuln.yml</span> <span style="color:#3d3d5c;"># Stack con vulns habilitadas</span>
+└── <span class="tree-important">README.md</span>
+  </div>
+
+  <div class="code-block">
+<span class="comment"># Branch strategy: GitHub Flow simplificado</span>
+<span class="cmd">main</span>        → producción estable, protegida
+<span class="cmd">develop</span>     → integración continua
+<span class="cmd">feature/</span>*   → feature branches individuales
+
+<span class="comment"># Ejemplo de flujo de trabajo diario:</span>
+git checkout develop
+git pull origin develop
+git checkout -b <span class="str">feature/nlp-gdpr-parser</span>
+<span class="comment"># ... trabajar ...</span>
+git push origin <span class="str">feature/nlp-gdpr-parser</span>
+<span class="comment"># → Abrir PR en GitHub → Code review → Merge a develop</span>
+
+<span class="comment"># Commit convention (recomendado):</span>
+git commit -m <span class="str">"feat(api): add JWT auth endpoint"</span>
+git commit -m <span class="str">"fix(nlp): handle empty PDF parsing"</span>
+git commit -m <span class="str">"docs: update README with docker setup"</span>
+  </div>
+</section>
+
+<!-- CLAUDE CODE GUIDE -->
+<section id="claudecode">
+  <div class="section-label">// 06 — Cómo usar Claude Code en este proyecto</div>
+  <h2>Guía de herramientas con IA</h2>
+
+  <div class="steps-list">
+    <div class="step-item">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h4>Instalar Claude Code y configurarlo en el repo</h4>
+        <p>Claude Code es un agente de terminal. En cada módulo (backend/, frontend/, nlp-engine/) podéis invocar Claude Code para que escriba código, corrija bugs y explique la arquitectura. Es especialmente útil para el DevOps: puede escribir Dockerfiles completos, configurar nginx, y generar el docker-compose.yml entero con un solo prompt bien estructurado.</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h4>Generar el scaffold inicial del backend</h4>
+        <p>Desde el directorio backend/, pedid a Claude Code: <em>"Crea una aplicación FastAPI con autenticación JWT, modelos SQLAlchemy para User, Company, Document y NormativaResult, y endpoints CRUD básicos. Usa PostgreSQL. Incluye Alembic para migraciones."</em> — En minutos tendréis una base funcional que el backend lead puede refinar.</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h4>Motor NLP: iteración rápida con Claude</h4>
+        <p>El NLP engineer puede usar Claude (aquí, en el chat) para diseñar el pipeline primero, luego usar Claude Code para implementarlo. Prompt sugerido: <em>"Dado un texto de política de empresa y una lista de requisitos de ISO 27001, crea una función Python que devuelva qué requisitos están cubiertos, cuáles parcialmente y cuáles ausentes, usando sentence-transformers para comparación semántica."</em></p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h4>Frontend: componentes con diseño real</h4>
+        <p>El frontend developer puede usar Claude (chat) para generar componentes React completos. Sed específicos: describid el estado, las props, y el comportamiento esperado. Claude Code puede luego integrar esos componentes en el proyecto real, resolver imports y ajustar estilos.</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <h4>Diseñar vulnerabilidades con explicación pedagógica</h4>
+        <p>La persona de Security puede usar Claude para: 1) Obtener el código exacto de una SQLi vulnerable en FastAPI, 2) Generar la guía de pentesting paso a paso para los compañeros, y 3) Escribir los writeups post-explotación. Esto garantiza que las vulns estén bien implementadas y sean reproducibles.</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">06</div>
+      <div class="step-content">
+        <h4>Code Review automático con Claude</h4>
+        <p>Antes de cada PR, pasad el diff por Claude: <em>"Revisa este código Python buscando: bugs lógicos, problemas de seguridad no intencionados, y mejoras de rendimiento."</em> Esto evita que introduzcáis vulnerabilidades accidentales además de las diseñadas, y mejora la calidad del código general.</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">07</div>
+      <div class="step-content">
+        <h4>Documentación automática</h4>
+        <p>Al final de cada semana, usad Claude para generar documentación: CHANGELOG, actualizar el README, generar ejemplos de uso de la API. Claude Code puede leer vuestros archivos directamente y producir documentación que refleje el estado real del código.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:3rem; margin-bottom:1rem;">Stack completo de herramientas recomendadas</h3>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-emoji">🤖</div>
+      <div class="tool-name">Claude Code</div>
+      <div class="tool-use">Agente de terminal — scaffolding, debugging, refactoring en el repo</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">💬</div>
+      <div class="tool-name">Claude.ai (chat)</div>
+      <div class="tool-use">Diseño de arquitectura, revisión de PRs, generación de docs</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">📁</div>
+      <div class="tool-name">GitHub Projects</div>
+      <div class="tool-use">Kanban board: To Do / In Progress / Review / Done</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">🐳</div>
+      <div class="tool-name">Docker Desktop</div>
+      <div class="tool-use">Desarrollo local unificado para todos los miembros del equipo</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">🔍</div>
+      <div class="tool-name">Burp Suite Community</div>
+      <div class="tool-use">Proxy para interceptar peticiones API durante pentesting</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">⚡</div>
+      <div class="tool-name">OWASP ZAP</div>
+      <div class="tool-use">Scanner automático de vulnerabilidades web</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">🗝️</div>
+      <div class="tool-name">jwt_tool</div>
+      <div class="tool-use">Testing de JWT: forjado de tokens, ataque "none" algorithm</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">💾</div>
+      <div class="tool-name">sqlmap</div>
+      <div class="tool-use">Explotación automática de SQL injection en la API</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">📊</div>
+      <div class="tool-name">Postman / Bruno</div>
+      <div class="tool-use">Testing manual de endpoints API y colecciones compartidas</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-emoji">🌐</div>
+      <div class="tool-name">Ngrok / Fly.io</div>
+      <div class="tool-use">Exponer el entorno local a los pentesters del máster</div>
+    </div>
+  </div>
+</section>
+
+<!-- MEJORAS V2 -->
+<section>
+  <div class="section-label">// 07 — Roadmap futuro (v2.0+)</div>
+  <h2>El proyecto que crece</h2>
+
+  <div class="arch-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px,1fr));">
+    <div class="arch-box">
+      <span class="arch-icon">🏅</span>
+      <div class="arch-tag">v2.0</div>
+      <h3>Multi-normativa avanzada</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Añadir SOC2, PCI-DSS, HIPAA. Permitir que las empresas seleccionen a qué marcos quieren cumplir simultáneamente.</p>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">📊</span>
+      <div class="arch-tag">v2.0</div>
+      <h3>Dashboard analytics</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Gráficos de evolución de compliance a lo largo del tiempo. Alertas cuando una normativa se actualiza y afecta al score.</p>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">🔔</span>
+      <div class="arch-tag">v2.1</div>
+      <h3>Sistema de alertas</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Notificaciones por email cuando se publican actualizaciones de normativas (ENS 2024, NIS2 transposición España, etc.).</p>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">🤝</span>
+      <div class="arch-tag">v2.1</div>
+      <h3>Modo consultor</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Un rol "auditor" que puede revisar y validar el análisis AI, añadir comentarios y firmar digitalmente el informe de compliance.</p>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">🛡️</span>
+      <div class="arch-tag">v3.0</div>
+      <h3>Versión securizada</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Branch "secure" que corrige todas las vulnerabilidades intencionadas. Los compañeros pueden comparar los dos estados del código.</p>
+    </div>
+    <div class="arch-box">
+      <span class="arch-icon">☁️</span>
+      <div class="arch-tag">v3.0</div>
+      <h3>Kubernetes deploy</h3>
+      <p style="font-size:0.85rem; color:var(--muted);">Migrar de Docker Compose a K8s con Helm charts. Escalar horizontalmente el motor NLP para análisis simultáneos.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">
+    NORMATIVACHECK v1.0 — Proyecto de Máster en Ciberseguridad<br>
+    <span style="color:var(--accent3);">Generado con Claude · Anthropic 2026</span>
+  </div>
+  <div style="font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--muted); text-align:right;">
+    5 personas · 4 semanas · ∞ potencial<br>
+    <span style="color:var(--accent2);">⚠️ Entorno de laboratorio — no producción</span>
+  </div>
+</footer>
+
+</body>
+</html>
